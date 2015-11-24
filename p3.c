@@ -1,5 +1,3 @@
-//added to github
-
 // version 1.1
 // changelog
 // - improved A.I
@@ -171,9 +169,10 @@ int next_move(){
 /* MAIN BODY */
 int main()
 {
-    int option;
+    int option,count;
     for(;;){
         memset(connect_4,0,sizeof(int)*7*6);
+        count = 0;
         printf("~~~~~~~~~Welcome to Connect Four Game~~~~~~~~~~~ \n\n");
         printBoard();
         printf("\nChoose an option: \n 1. Player vs. Computer \n 2. Player vs. Player \n Your Choice: ");
@@ -183,12 +182,17 @@ int main()
             printf("Invalid number! Enter again: ");
         }
         for(;;){
-            if(option == 2){                     //PVP
+            if(option == 2){
+                count++;
+                printf("Turn # %d \n", count);//PVP
                 int check = player2Move(0);
                 if(check==1 || check==0) break;
+                count++;
+                printf("Turn # %d \n", count);
                 int check2 = player2Move(1);
                 if(check2==1 || check2==0) break;
             }else{                                //PVE
+                
                 int move = next_move();
                 int check2 = insert_board(move, 1);
                 printf("\n COMPUTER'S TURN\n");
@@ -197,12 +201,16 @@ int main()
                     printf("\n !! DRAW !! \n");
                     break;
                 }
+                count++;
+                printf("Turn # %d \n", count);
                 printf("Computer chose column %d \n",move);
                 if(check2 ==1){
                     printf("COMPUTER WON\n");
                     break;
                 }
                 int check = player2Move(0);
+                count++;
+                printf("Turn # %d \n", count);
                 if(check==1 || check==0) break;
             }
         }
