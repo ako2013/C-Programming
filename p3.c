@@ -1,3 +1,5 @@
+//added to github
+
 // version 1.1
 // changelog
 // - improved A.I
