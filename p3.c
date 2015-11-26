@@ -1,4 +1,4 @@
-// version 1.2
+// version 1.1
 // changelog
 // - improved A.I
 
@@ -8,7 +8,8 @@
 #include <string.h>
 
 int connect_4 [7][6];
-/* 
+int turnCount = 0;
+/*
  * PRINT THE GAME BOARD AND CHECK IF FULL
  * @return 1 if board is full
  */
@@ -26,7 +27,7 @@ int printBoard(){
     }return checkFull;
 }
 /*
- * CHECK WINNING MOVE
+ * CHECK WINNING MOVE BY COUNTING IF THERE'S FOUR SAME NUMBER TOGETHER
  * @num row position
  * @player 1/2
  * @col column position
@@ -52,7 +53,7 @@ int winningCondition (int num, int player, int col){
         }else check = 0;
     }check =0; //reset the count for next condition
     //check diagonally up/down
-    for(int k = 0; k < 7*2;k++){          //diagonally up
+    for(int k = 0; k < 7*2;k++){          //check diagonally up
         for(int j = 0; j <= k; j++){
             int i = k-j;
             //int x = 6-i;
@@ -60,10 +61,10 @@ int winningCondition (int num, int player, int col){
                 if(connect_4[i][j] == player){
                     check++;
                     if(check == 4) return 1;
-                }else check = 0;
+                }else check = 0; //reset count
             }
         }check = 0; //reset the count for next condition
-        for(int j = 0; j <= k; j++){     //diagonally down
+        for(int j = 0; j <= k; j++){     //check diagonally down
             int i = k-j;
             int x = 6-i;
             if(i < 7 && j < 6){
@@ -90,13 +91,15 @@ int insert_board(int column, int value){
         }
     }return 0;
 }
-/* 
+/*
  * PLAYER(S) MOVE
  * @player take in player number 0/1 -> 1/2
  * @return 1 for draw game/ 0 for a player won the game
  */
 int player2Move(int player){
     int move;
+    turnCount++;
+    printf("\nTurn # %d ", turnCount);
     printf("\nPlayer %d turns to play ",player+1);
     printf("\nPlease choose a number from 1 to 7: ");
     for(;;){ //input validation
@@ -109,11 +112,11 @@ int player2Move(int player){
     int check = insert_board(move,player); //move = 1-7
     int checkFull = printBoard();  //check if all board is full
     if(checkFull == 1){
-        printf("\n !! DRAW !! \n");
+        printf("\n!! DRAW !! \n");
         return 1;
     }
     if(check == 1){
-        printf("PLAYER %d WON\n", player+1);
+        printf("\n!! PLAYER %d WON !! \n", player+1);
         return 0;
     }return 9; // return nothing
 }
@@ -143,7 +146,6 @@ int checkWinningComputer(int value)
 int next_move(){
     int move = 9;
     int check1, check2;
-    
     check1= checkWinningComputer(1); // check if there's a winning move
     if(check1 != 9) return check1;
     check2= checkWinningComputer(0); // check opponent's winning moves
@@ -173,6 +175,7 @@ int main()
     for(;;){
         memset(connect_4,0,sizeof(int)*7*6);
         count = 0;
+        turnCount = 0;
         printf("~~~~~~~~~Welcome to Connect Four Game~~~~~~~~~~~ \n\n");
         printBoard();
         printf("\nChoose an option: \n 1. Player vs. Computer \n 2. Player vs. Player \n Your Choice: ");
@@ -182,35 +185,28 @@ int main()
             printf("Invalid number! Enter again: ");
         }
         for(;;){
-            if(option == 2){
-                count++;
-                printf("Turn # %d \n", count);//PVP
+            if(option == 2){                      //PVP
                 int check = player2Move(0);
                 if(check==1 || check==0) break;
-                count++;
-                printf("Turn # %d \n", count);
                 int check2 = player2Move(1);
                 if(check2==1 || check2==0) break;
             }else{                                //PVE
-                
                 int move = next_move();
                 int check2 = insert_board(move, 1);
-                printf("\n COMPUTER'S TURN\n");
+                turnCount++;
+                printf("\nTurn # %d ", turnCount);
+                printf("\nCOMPUTER'S TURN\n");
                 int checkFull = printBoard();
                 if(checkFull == 1){
-                    printf("\n !! DRAW !! \n");
+                    printf("\n!! DRAW !! \n");
                     break;
                 }
-                count++;
-                printf("Turn # %d \n", count);
                 printf("Computer chose column %d \n",move);
                 if(check2 ==1){
-                    printf("COMPUTER WON\n");
+                    printf("\n!! COMPUTER WON !! \n");
                     break;
                 }
                 int check = player2Move(0);
-                count++;
-                printf("Turn # %d \n", count);
                 if(check==1 || check==0) break;
             }
         }
